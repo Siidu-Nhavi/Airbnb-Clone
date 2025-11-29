@@ -1,0 +1,24 @@
+<% layout("layouts/boilerplate") %>
+
+<h3>All Listings</h3>
+
+<div class="listings-container text-center">
+  <% for (let listing of allListings) { %>
+    <a href="/listings/<%= listing._id %>" style="text-decoration: none; color: inherit;">
+      <div class="card" style="width: 20rem; display: inline-block; margin: 15px; position: relative; overflow: hidden;">
+        <img src="<%= listing.image.url %>" class="card-img" alt="listing_image" style="height: 20rem; object-fit: cover listing-card;">
+
+        <!-- Overlay -->
+        <div class="card-img-overlay d-flex align-items-center justify-content-center">
+          <h5 class="overlay-text"></h5>
+        </div>
+
+        <div class="card-body">
+          <p class="card-text"><b><%= listing.title %></b></p>
+          <p><%= listing.description %></p>
+          <p>₹<%= listing.price ? listing.price.toLocaleString('en-IN') : "N/A" %>/night</p>
+        </div>
+      </div>
+    </a>
+  <% } %>
+</div>
