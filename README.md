@@ -82,7 +82,7 @@ Add UI preview images or GIF demos here
 ## Contact
 
 For collaboration or improvement suggestions:
-Email: nhavishiddu@gmail.com
+Email:siddunhavi@gmail.com
 
 ---
 
