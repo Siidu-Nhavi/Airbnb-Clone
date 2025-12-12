@@ -1,89 +1,123 @@
 # Airbnb Clone
 
-A full-stack Airbnb-style platform where users can browse property listings with images, explore details, and experience a modern UI inspired by Airbnb. Built with MERN principles, featuring a dynamic frontend and secure backend architecture.
+A full-stack Airbnb-style platform where users can browse property listings, view details, authenticate securely, and interact with a dynamic UI inspired by Airbnb.  
+Built using Node.js, Express, MongoDB, and EJS templates, with clean backend architecture and scalable project structure.
 
-## Current Capabilities (Completed Work)
+---
+
+## 🚀 Current Capabilities (Completed Work)
 
 ✔ Fully responsive UI with Bootstrap  
-✔ Property listings with real images from Unsplash  
-✔ Listing detail view structure  
-✔ Backend API powered by Express.js  
-✔ MongoDB database integration  
-✔ Clean code architecture for future scalability  
-✔ Separate frontend and backend structure  
-✔ Listing data managed dynamically
+✔ Property listings with images (Unsplash integration)  
+✔ Listing detail pages with dynamic content  
+✔ Create, Edit, and Delete listings  
+✔ MongoDB database with Mongoose models  
+✔ Flash messages for user notifications  
+✔ Passport.js setup for authentication  
+✔ User signup and login system  
+✔ Session management with express-session  
+✔ Folder structure ready for scalable expansion  
 
-## Work In Progress (Upcoming Features)
+---
 
-◻ User authentication (Sign up / Login)  
+## 🔐 **New Features Added Today (Authentication Update)**
+
+### **User Authentication Module (Completed Today)**  
+✔ Signup page with username, email, password  
+✔ Login page using Passport Local Strategy  
+✔ Secure password hashing using passport-local-mongoose  
+✔ Flash messages for success/error  
+✔ Login redirect system  
+✔ Basic route protection foundation  
+✔ User model implemented  
+✔ User router implemented  
+
+### These updates now allow:
+- Creating a new user account  
+- Logging in securely  
+- Displaying login success/error messages  
+- Redirecting to listings after login  
+
+---
+
+## 🏗️ Work In Progress (Upcoming Features)
+
+◻ Route protection for creating/editing listings  
+◻ Session-based redirect to originally requested page  
+◻ Logout functionality  
+◻ User dashboard to manage listings/bookings  
 ◻ Booking flow with date selection  
-◻ Contact / messaging system  
-◻ User dashboard to manage bookings  
-◻ Admin panel to manage property listings  
-◻ Deployment on hosted platforms (Render + Vercel)
+◻ Messaging/contact system  
+◻ Admin panel for listing management  
+◻ Deployment (Render / Railway / Vercel)  
 
-## Tech Stack
+---
+
+## 🛠 Tech Stack
 
 ### Frontend
 - HTML  
 - CSS  
 - JavaScript  
 - Bootstrap  
+- EJS templating engine  
 
 ### Backend
 - Node.js  
 - Express.js  
 - MongoDB (Mongoose ORM)  
-
-## Folder Structure
-```
-airbnb-clone/
-│
-├── frontend/        # UI files (HTML, CSS, JS, images)
-└── backend/         # Express API & database config
-```
-
-## How to Run
-
-### Backend
-```
-cd backend
-npm install
-```
-
-Create `.env` file inside backend:
-```
-MONGO_URI=your_mongodb_connection_string
-PORT=5000
-```
-
-Start backend:
-```
-npm start
-```
-
-### Frontend
-Open:
-```
-frontend/index.html
-```
-in your browser
-
-## Future Enhancements
-- Payment integration
-- Map support for property location
-- Image upload for property owners
-- Reviews and rating system
-- Wishlists and search filters
-
-## Screenshots (Coming Soon)
-Add UI preview images or GIF demos here
-
-## Contact
-
-For collaboration or improvement suggestions:
-Email:siddunhavi@gmail.com
+- Passport.js (local authentication)  
+- express-session & connect-flash  
 
 ---
 
-This project is actively evolving as I enhance my full-stack development skills.
+## 📂 Folder Structure
+
+airbnb-clone/
+
+├── router/
+│ ├── listing.js # Listing CRUD routes
+│ ├── review.js # Review routes
+│ └── user.js # Login/Signup routes (NEW)
+│
+├── models/
+│ ├── listing.js
+│ └── user.js # User schema + passport plugin (NEW)
+│
+├── views/
+│ ├── listings/ # Listing pages
+│ ├── users/ # Login & Signup pages (NEW)
+│ ├── includes/ # Flash, navbar, partials
+│ └── layouts/ # Boilerplate layout
+│
+├── utils/
+│ ├── ExpressError.js
+│ └── wrapAsync.js
+│
+├── public/ # Static files
+├── app.js # Main server file (updated today)
+├── package.json
+└── package-lock.json
+
+
+---
+
+## ▶️ How to Run
+
+### Backend
+
+```bash
+npm install
+npm start
+
+```Frontend
+endered dynamically through EJS.
+Visit:
+
+http://localhost:8080/listings
+http://localhost:8080/signup
+http://localhost:8080/login
+
+🤝 Contact
+
+For collaboration or improvement suggestions, feel free to connect or open an issue on GitHub.
