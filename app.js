@@ -7,10 +7,14 @@ const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
+const localStrategy = require("passport-local");
+const User = require("./models/user.js");
 
 // Import router
 const listingRouter = require("./router/listing.js");
-const reviews = require("./router/review.js");
+const reviewsRouter = require("./router/review.js");
+const userRouter = require("./router/user.js");
 
 const sessionOptions = {
   secret: "myknowledgeincse",
@@ -53,6 +57,17 @@ app.use(express.static(path.join(__dirname, "/public")));
 app.use(session(sessionOptions));
 app.use(flash());
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+
+
+
+
 // Root route
 app.get("/", (req, res) => {
   res.send("Hi, I am root");
@@ -62,11 +77,22 @@ app.use((req,res,next) => {
   res.locals.success = req.flash("Success");
   res.locals.error = req.flash("error");
   next();
-})
+});
+
+app.use((req, res, next) => {
+  if (!req.isAuthenticated() && req.method === "GET") {
+    req.session.returnTo = req.originalUrl;
+  }
+  next();
+});
+
+
+
 
 // Mount routers (after session & flash middleware)
 app.use("/listings", listingRouter);
-app.use("/listings/:id/reviews", reviews);
+app.use("/listings/:id/reviews", reviewsRouter);
+app.use("/",userRouter);
 
 // 404 Handler
 app.use((req, res, next) => {
