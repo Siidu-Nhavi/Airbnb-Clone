@@ -8,7 +8,7 @@ const ExpressError = require("./utils/ExpressError.js");
 const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
-const localStrategy = require("passport-local");
+const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 
 // Import router
@@ -59,7 +59,7 @@ app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new localStrategy(User.authenticate()));
+passport.use(new LocalStrategy(User.authenticate()));
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -80,13 +80,27 @@ app.use((req,res,next) => {
 });
 
 app.use((req, res, next) => {
-  if (!req.isAuthenticated() && req.method === "GET") {
+  if (
+    !req.isAuthenticated() &&
+    req.method === "GET" &&
+    !req.originalUrl.includes("/login") &&
+    !req.originalUrl.includes("/signup")
+  ) {
     req.session.returnTo = req.originalUrl;
   }
   next();
 });
 
 
+//creating demo user
+// app.get("/demouser", async(req,res) => {
+//   let fakeUser = new User({
+//     email :"student@gmail.com",
+//     username : "delta-student"
+//   });
+//   let registeredUser = await User.register(fakeUser,"helloworld");
+//   res.send(registeredUser);
+// });
 
 
 // Mount routers (after session & flash middleware)

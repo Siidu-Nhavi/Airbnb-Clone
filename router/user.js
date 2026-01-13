@@ -3,6 +3,8 @@ const router = express.Router();
 const User = require("../models/user.js");
 const wrapAsync = require("../utils/wrapAsync");
 const passport = require("passport");
+
+
 router.get("/signup", (req, res) => {
     res.render("users/signup.ejs");
 });
@@ -28,18 +30,45 @@ router.post("/signup", wrapAsync(async (req, res) => {
 router.get("/login", (req, res) => {
     res.render("users/login.ejs");
 });
-
 router.post(
   "/login",
-  passport.authenticate("local", { failureRedirect: "/login", failureFlash: true }),
+  (req, res, next) => {
+    console.log("Login body:", req.body);
+    next();
+  },
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+    failureFlash: true
+  }),
   (req, res) => {
-    // set success flash on the request
-    req.flash("Success", `Welcome back, ${req.user.username}!`);
-
-    // redirect — do not send and then redirect
+    console.log("Authenticated:", req.user.username);
     res.redirect("/listings");
   }
 );
+
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  const user = await User.findOne({ username });
+  console.log("FOUND USER:", user?.username);
+
+  User.authenticate()(username, password, (err, user, options) => {
+    console.log("ERR:", err);
+    console.log("USER:", user);
+    console.log("OPTIONS:", options);
+
+    if (!user) {
+      return res.send("Authentication failed");
+    }
+
+    req.logIn(user, (err) => {
+      if (err) return res.send("Login error");
+      res.send("LOGIN SUCCESS");
+    });
+  });
+});
+
+
 
 
 
