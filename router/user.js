@@ -3,75 +3,66 @@ const router = express.Router();
 const User = require("../models/user.js");
 const wrapAsync = require("../utils/wrapAsync");
 const passport = require("passport");
+const { isAlreadyLoggedIn } = require("../middleware");
 
 
-router.get("/signup", (req, res) => {
-    res.render("users/signup.ejs");
+  // SIGNUP ROUTES
+
+router.get("/signup",isAlreadyLoggedIn,(req, res) => {
+  res.render("users/signup.ejs");
 });
 
-router.post("/signup", wrapAsync(async (req, res) => {
+router.post(
+  "/signup",
+  isAlreadyLoggedIn,
+  wrapAsync(async (req, res, next) => {
     try {
-        let { username, email, password } = req.body.user;
+      const { username, email, password } = req.body.user;
 
-        const newUser = new User({ email, username });
-        const registeredUser = await User.register(newUser, password);
+      const newUser = new User({ username, email });
+      const registeredUser = await User.register(newUser, password);
 
-        console.log(registeredUser);
-
-        req.flash("Success", "Welcome to Wanderlust");
+      // Auto-login after signup
+      req.login(registeredUser, err => {
+        if (err) return next(err);
+        req.flash("success", "Welcome to Wanderlust!");
         res.redirect("/listings");
-    } catch (e) {
-        req.flash("error", e.message);
-        res.redirect("/signup");
+      });
+    } catch (err) {
+      req.flash("error", err.message);
+      res.redirect("/signup");
     }
-}));
+  })
+);
 
 
-router.get("/login", (req, res) => {
-    res.render("users/login.ejs");
+   //LOGIN ROUTES
+
+router.get("/login",isAlreadyLoggedIn,(req, res) => {
+  res.render("users/login.ejs");
 });
+
 router.post(
   "/login",
-  (req, res, next) => {
-    console.log("Login body:", req.body);
-    next();
-  },
+  isAlreadyLoggedIn,
   passport.authenticate("local", {
     failureRedirect: "/login",
-    failureFlash: true
+    failureFlash: "Invalid username or password"
   }),
   (req, res) => {
-    console.log("Authenticated:", req.user.username);
+    req.flash("success", "Welcome back to wanderlust!");
     res.redirect("/listings");
   }
 );
 
-router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
+   //LOGOUT ROUTE
 
-  const user = await User.findOne({ username });
-  console.log("FOUND USER:", user?.username);
-
-  User.authenticate()(username, password, (err, user, options) => {
-    console.log("ERR:", err);
-    console.log("USER:", user);
-    console.log("OPTIONS:", options);
-
-    if (!user) {
-      return res.send("Authentication failed");
-    }
-
-    req.logIn(user, (err) => {
-      if (err) return res.send("Login error");
-      res.send("LOGIN SUCCESS");
-    });
+router.get("/logout", (req, res, next) => {
+  req.logout(err => {
+    if (err) return next(err);
+    req.flash("success", "You are logged out!");
+    res.redirect("/listings");
   });
 });
-
-
-
-
-
-
 
 module.exports = router;

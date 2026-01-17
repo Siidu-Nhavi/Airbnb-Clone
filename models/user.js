@@ -11,7 +11,7 @@ const UserSchema = new Schema({
   }
 });
 
-// ✅ THIS MUST RECEIVE A FUNCTION
+//  THIS MUST RECEIVE A FUNCTION
 UserSchema.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model("User", UserSchema);

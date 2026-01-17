@@ -11,109 +11,104 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 
-// Import router
+// Routers
 const listingRouter = require("./router/listing.js");
 const reviewsRouter = require("./router/review.js");
 const userRouter = require("./router/user.js");
+
+/* ======================
+   SESSION CONFIG
+====================== */
 
 const sessionOptions = {
   secret: "myknowledgeincse",
   resave: false,
   saveUninitialized: false,
   cookie: {
-    // Use maxAge (milliseconds). If you want an expires Date, set expires: new Date(...)
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    httpOnly: true, // mitigate XSS
-    // secure: true // enable in production when using HTTPS
+    httpOnly: true,
   },
 };
 
-// MongoDB connection
+/* ======================
+   DATABASE
+====================== */
+
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 
 async function main() {
   await mongoose.connect(MONGO_URL);
   console.log("Connected to DB");
 
-  // Start server after DB connection
   app.listen(8080, () => {
     console.log("Server running on port 8080");
   });
 }
 
-main().catch((err) => {
-  console.error("DB connection error:", err);
-});
+main().catch(err => console.error(err));
 
-// View engine setup
+/* ======================
+   VIEW ENGINE
+====================== */
+
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// Middleware
+/* ======================
+   MIDDLEWARE
+====================== */
+
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
-app.use(express.static(path.join(__dirname, "/public")));
+app.use(express.static(path.join(__dirname, "public")));
 app.use(session(sessionOptions));
 app.use(flash());
 
+/* ======================
+   PASSPORT CONFIG
+====================== */
+
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
 
+passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+/* ======================
+   FLASH & USER LOCALS
+====================== */
+
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success"); 
+  res.locals.error = req.flash("error");
+  res.locals.currUser = req.user;
+  next();
+});
 
 
+/* ======================
+   ROUTES
+====================== */
 
-
-// Root route
 app.get("/", (req, res) => {
   res.send("Hi, I am root");
 });
 
-app.use((req,res,next) => {
-  res.locals.success = req.flash("Success");
-  res.locals.error = req.flash("error");
-  next();
-});
-
-app.use((req, res, next) => {
-  if (
-    !req.isAuthenticated() &&
-    req.method === "GET" &&
-    !req.originalUrl.includes("/login") &&
-    !req.originalUrl.includes("/signup")
-  ) {
-    req.session.returnTo = req.originalUrl;
-  }
-  next();
-});
-
-
-//creating demo user
-// app.get("/demouser", async(req,res) => {
-//   let fakeUser = new User({
-//     email :"student@gmail.com",
-//     username : "delta-student"
-//   });
-//   let registeredUser = await User.register(fakeUser,"helloworld");
-//   res.send(registeredUser);
-// });
-
-
-// Mount routers (after session & flash middleware)
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
-app.use("/",userRouter);
+app.use("/", userRouter);
 
-// 404 Handler
+/* ======================
+   ERROR HANDLING
+====================== */
+
 app.use((req, res, next) => {
   next(new ExpressError(404, "Page not found"));
 });
 
-// Global Error Handler
+
 app.use((err, req, res, next) => {
   const { statusCode = 500 } = err;
   res.status(statusCode).render("error", { err });
