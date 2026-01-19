@@ -1,5 +1,6 @@
 module.exports.isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
+    req.session.redirectUrl = req.originalUrl;
     req.flash("error", "You must be logged in");
     return res.redirect("/login");
   }
@@ -13,6 +14,12 @@ module.exports.isAlreadyLoggedIn = (req, res, next) => {
   }
   next();
 };
+module.exports.saveRedirectUrl = (req,res,next) =>{
+  if(req.session.redirectUrl){
+    res.locals.redirectUrl = req.session.redirectUrl;
+  }
+  next();
+}
 
 //Note: Cannot set headers after they are sent 
-// here i initially make mistake after flashing succes or failure message i directly redirected to listings that is not right way to do that cause it leads our server crash . it is important to avoid.
+// here i initially make mistake after flashing succes or failure message i directly redirected to listings that is not right way to do that cause it leads our server crash . it is important to avoid. and return it.

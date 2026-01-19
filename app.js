@@ -16,9 +16,7 @@ const listingRouter = require("./router/listing.js");
 const reviewsRouter = require("./router/review.js");
 const userRouter = require("./router/user.js");
 
-/* ======================
-   SESSION CONFIG
-====================== */
+//   SESSION CONFIG
 
 const sessionOptions = {
   secret: "myknowledgeincse",
@@ -30,10 +28,7 @@ const sessionOptions = {
   },
 };
 
-/* ======================
-   DATABASE
-====================== */
-
+//   DATABASE
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 
 async function main() {
@@ -47,17 +42,13 @@ async function main() {
 
 main().catch(err => console.error(err));
 
-/* ======================
-   VIEW ENGINE
-====================== */
+//   VIEW ENGINE
 
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-/* ======================
-   MIDDLEWARE
-====================== */
+   //MIDDLEWARE
 
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
@@ -65,9 +56,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(session(sessionOptions));
 app.use(flash());
 
-/* ======================
-   PASSPORT CONFIG
-====================== */
+//   PASSPORT CONFIG
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -76,9 +65,8 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-/* ======================
-   FLASH & USER LOCALS
-====================== */
+
+//   FLASH & USER LOCALS
 
 app.use((req, res, next) => {
   res.locals.success = req.flash("success"); 
@@ -87,10 +75,7 @@ app.use((req, res, next) => {
   next();
 });
 
-
-/* ======================
-   ROUTES
-====================== */
+//   ROUTES
 
 app.get("/", (req, res) => {
   res.send("Hi, I am root");
@@ -100,9 +85,7 @@ app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
 app.use("/", userRouter);
 
-/* ======================
-   ERROR HANDLING
-====================== */
+//   ERROR HANDLING
 
 app.use((req, res, next) => {
   next(new ExpressError(404, "Page not found"));

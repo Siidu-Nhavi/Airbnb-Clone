@@ -3,12 +3,13 @@ const router = express.Router();
 const User = require("../models/user.js");
 const wrapAsync = require("../utils/wrapAsync");
 const passport = require("passport");
-const { isAlreadyLoggedIn } = require("../middleware");
+const { isAlreadyLoggedIn } = require("../middleware.js");
+const {saveRedirectUrl} = require("../middleware.js");
 
 
-  // SIGNUP ROUTES
+// SIGNUP ROUTES
 
-router.get("/signup",isAlreadyLoggedIn,(req, res) => {
+router.get("/signup", isAlreadyLoggedIn, (req, res) => {
   res.render("users/signup.ejs");
 });
 
@@ -18,10 +19,8 @@ router.post(
   wrapAsync(async (req, res, next) => {
     try {
       const { username, email, password } = req.body.user;
-
       const newUser = new User({ username, email });
       const registeredUser = await User.register(newUser, password);
-
       // Auto-login after signup
       req.login(registeredUser, err => {
         if (err) return next(err);
@@ -36,26 +35,28 @@ router.post(
 );
 
 
-   //LOGIN ROUTES
+//LOGIN ROUTES
 
-router.get("/login",isAlreadyLoggedIn,(req, res) => {
+router.get("/login", isAlreadyLoggedIn, (req, res) => {
   res.render("users/login.ejs");
 });
 
 router.post(
   "/login",
+  saveRedirectUrl,
   isAlreadyLoggedIn,
   passport.authenticate("local", {
     failureRedirect: "/login",
     failureFlash: "Invalid username or password"
   }),
-  (req, res) => {
+  async (req, res) => {
     req.flash("success", "Welcome back to wanderlust!");
-    res.redirect("/listings");
+    let redirectUrl = res.locals.redirectUrl ||"/listings";
+    res.redirect(redirectUrl);
   }
 );
 
-   //LOGOUT ROUTE
+//LOGOUT ROUTE
 
 router.get("/logout", (req, res, next) => {
   req.logout(err => {
