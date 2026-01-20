@@ -1,0 +1,71 @@
+/* Starability: start with empty stars */
+.starability-slot>label {
+    background-position: 0 0;
+    /* empty stars */
+}
+
+/* Fill stars on hover or selection */
+.starability-slot>input:checked+label,
+.starability-slot>input:hover+label,
+.starability-slot>input:focus+label {
+    background-position: 0 -30px;
+    /* filled stars */
+}
+
+
+.starability-result {
+    transform: scale(0.8);
+    transform-origin: left center;
+}
+
+
+/* ===== Rating Summary ===== */
+.rating-summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: 0.5rem 0 1.2rem;
+  flex-wrap: wrap;
+}
+
+/* Star block */
+.rating-summary .starability-result {
+  transform: scale(0.85);
+  transform-origin: left center;
+}
+
+/* Text block */
+.rating-right {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.rating-score {
+  font-weight: 600;
+  color: #000;
+}
+
+.rating-meta {
+  color: #777;
+}
+
+.rating-divider {
+  margin: 0 0.25rem;
+  color: #aaa;
+}
+
+.rating-count {
+  color: #666;
+}
+
+/* Mobile refinement */
+@media (max-width: 576px) {
+  .rating-summary {
+    justify-content: center;
+    text-align: center;
+  }
+}

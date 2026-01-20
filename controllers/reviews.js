@@ -8,7 +8,8 @@ module.exports.createReview = async (req, res) => {
   const review = new Review(req.body.review);
   review.author = req.user._id;
 
-  listing.reviews.push(review);
+  listing.reviews.unshift(review); // new reviews add first 
+
 
   await review.save();
   await listing.save();

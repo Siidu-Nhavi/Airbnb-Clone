@@ -6,38 +6,25 @@ const wrapAsync = require("../utils/wrapAsync");
 const { isAlreadyLoggedIn, saveRedirectUrl } = require("../middleware");
 const usersController = require("../controllers/users");
 
-// SIGNUP ROUTES
-router.get(
-  "/signup",
-  isAlreadyLoggedIn,
-  usersController.renderSignupForm
-);
+// SIGNUP
+router.route("/signup")
+  .get(isAlreadyLoggedIn, usersController.renderSignupForm)
+  .post(isAlreadyLoggedIn, wrapAsync(usersController.signup));
 
-router.post(
-  "/signup",
-  isAlreadyLoggedIn,
-  wrapAsync(usersController.signup)
-);
+// LOGIN
+router.route("/login")
+  .get(isAlreadyLoggedIn, usersController.renderLoginForm)
+  .post(
+    saveRedirectUrl,
+    isAlreadyLoggedIn,
+    passport.authenticate("local", {
+      failureRedirect: "/login",
+      failureFlash: "Invalid username or password",
+    }),
+    usersController.login
+  );
 
-// LOGIN ROUTES
-router.get(
-  "/login",
-  isAlreadyLoggedIn,
-  usersController.renderLoginForm
-);
-
-router.post(
-  "/login",
-  saveRedirectUrl,
-  isAlreadyLoggedIn,
-  passport.authenticate("local", {
-    failureRedirect: "/login",
-    failureFlash: "Invalid username or password",
-  }),
-  usersController.login
-);
-
-// LOGOUT ROUTE
+// LOGOUT
 router.get("/logout", usersController.logout);
 
 module.exports = router;

@@ -36,8 +36,14 @@ module.exports.showListing = async (req, res) => {
     req.flash("error", "Listing you requested does not exist!");
     return res.redirect("/listings");
   }
+  let avgRating = 0;
 
-  res.render("listings/show", { listing });
+  if (listing.reviews.length) {
+    const sum = listing.reviews.reduce((acc, r) => acc + r.rating, 0);
+    avgRating = (sum / listing.reviews.length).toFixed(1);
+  }
+
+  res.render("listings/show", { listing, avgRating });
 };
 
 // EDIT FORM
