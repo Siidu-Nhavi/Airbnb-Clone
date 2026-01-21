@@ -10,15 +10,8 @@ const listingSchema = new Schema({
   },
   description: String,
   image: {
-    filename: {
-      type: String,
-      default: "listingimage",
-    },
-    url: {
-      type: String,
-      default:
-        "https://unsplash.com/photos/brown-wooden-fence-on-brown-sand-near-body-of-water-during-sunset-GaDccucZhvE",
-    },
+    url: String,
+    filename: String,
   },
   price: Number,
   location: String,
@@ -26,23 +19,35 @@ const listingSchema = new Schema({
   reviews: [
     {
       type: Schema.Types.ObjectId,
-      ref:"Review",
+      ref: "Review",
     },
   ],
-  owner:{
-    type:Schema.Types.ObjectId,
+  owner: {
+    type: Schema.Types.ObjectId,
     ref: "User",
+  },
+
+  geometry: {
+    type: {
+      type: String,
+      enum: ["Point"],
+      required: true,
+    },
+    coordinates: {
+      type: [Number], // [lng, lat]
+      required: true,
+    },
   },
 });
 
-listingSchema.post("findOneAndDelete", async (Listing) =>{
+listingSchema.post("findOneAndDelete", async (Listing) => {
   if (Listing) {
     await Review.deleteMany({
       _id: {
         $in: Listing.reviews,
       },
     });
-  }   
+  }
 });
 
 const Listing = mongoose.model("Listing", listingSchema);

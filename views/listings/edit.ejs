@@ -6,7 +6,8 @@
                 <div class="container mt-4">
                     <h3 class="mb-4 text-center">Edit Your Listing</h3>
 
-                    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" class="needs-validation" novalidate>
+                    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" class="needs-validation"
+                        enctype="multipart/form-data">
 
                         <div class="mb-3">
                             <label for="title" class="form-label">Title</label>
@@ -19,11 +20,17 @@
                             <textarea id="description" name="listing[description]" class="form-control" rows="3"
                                 placeholder="Enter description" required><%= listing.description %></textarea>
                         </div>
+                        <div>
+                            Original Listing Image <br />
+                            <img src=" <%= originalImageUrl %>">
+                        </div>
 
                         <div class="mb-3">
-                            <label for="image" class="form-label">Image URL</label>
-                            <input id="image" name="listing[image]" value="<%= listing.image %>" type="text"
-                                class="form-control" placeholder="Enter image URL" required />
+                            <label for="image" class="form-label">Upload New Image</label>
+                            <input 
+                             name="listing[image]"  type="file"
+                            class="form-control"
+                             />
                         </div>
 
                         <div class="row">
@@ -46,7 +53,7 @@
                             </div>
 
                         </div>
-                        <div >
+                        <div>
                             <button class="btn btn-primary edit-btn" type="submit">Save Changes</button>
                         </div>
 
@@ -55,4 +62,3 @@
             </body>
         </div>
     </div>
-   
