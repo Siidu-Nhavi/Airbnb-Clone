@@ -1,3 +1,8 @@
+if(process.env.NODE_ENV != "production"){
+  require('dotenv').config();
+}
+
+
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -64,6 +69,10 @@ app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+// for image storing
+app.use("/uploads", express.static("uploads"));
+
 
 
 //   FLASH & USER LOCALS

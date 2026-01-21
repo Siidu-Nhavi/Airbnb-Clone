@@ -1,4 +1,6 @@
 const Listing = require("../models/listing");
+const { listingSchema } = require("../utils/Schema");
+const ExpressError = require("../utils/ExpressError");
 
 // INDEX
 module.exports.index = async (req, res) => {
@@ -13,12 +15,18 @@ module.exports.renderNewForm = (req, res) => {
 
 // CREATE
 module.exports.createListing = async (req, res) => {
+  const { error } = listingSchema.validate(req.body);
+  if (error) {
+    throw new ExpressError(400, error.details[0].message);
+  }
+
   const listing = new Listing(req.body.listing);
   listing.owner = req.user._id;
 
   await listing.save();
-  req.flash("success", "New Listing Created!");
-  res.redirect("/listings");
+
+  req.flash("success", "New listing created");
+  res.redirect(`/listings/${listing._id}`);
 };
 
 // SHOW
