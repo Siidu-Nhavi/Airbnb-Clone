@@ -1,4 +1,5 @@
-/* Optional body styling */
+/* Global Styles */
+
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap');
 
 body {
@@ -8,10 +9,13 @@ body {
     min-height: 100vh;
 }
 
-.container{
+.container {
     flex: 1;
 }
-/* Navbar styling */
+
+/* Navbar */
+
+
 .navbar {
     height: 3rem;
     background-color: white;
@@ -37,9 +41,28 @@ body {
     text-decoration: underline;
 }
 
-/* Footer styling */
+/* Navbar Responsive */
+@media (max-width: 768px) {
+    .navbar {
+        height: auto;
+        padding: 0.5rem 1rem;
+        flex-wrap: wrap;
+    }
+
+    .nav-link {
+        margin-left: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .fa-compass {
+        font-size: 1.6rem;
+    }
+}
+
+/* Footer */
+
+
 .f-info {
-    height: 8rem;
     background-color: #ebebeb;
     display: flex;
     flex-wrap: wrap;
@@ -60,7 +83,6 @@ body {
     margin: 0 0.5rem;
 }
 
-/*  fixed hover selector (was "a :hover" — wrong space) */
 .f-info-links a:hover {
     text-decoration: underline;
 }
@@ -76,22 +98,77 @@ body {
     cursor: pointer;
 }
 
+/* Footer Responsive */
+@media (max-width: 576px) {
+    .f-info {
+        padding: 1.5rem 0.5rem;
+    }
 
-/* styling to the cards */
+    .f-info-links a {
+        display: inline-block;
+        margin: 0.3rem;
+        font-size: 0.9rem;
+    }
+}
+
+ /* Filters (Index Page) */
+
+
+#filters {
+    display: flex;
+    gap: 1.2rem;
+    padding: 1rem;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+#filters::-webkit-scrollbar {
+    display: none;
+}
+
+.filter {
+    text-align: center;
+    cursor: pointer;
+    color: #555;
+    transition: all 0.2s ease;
+    min-width: 70px;
+    flex-shrink: 0;
+}
+
+.filter i {
+    font-size: 1rem;
+}
+
+.filter:hover {
+    color: #000;
+    transform: scale(1.1);
+}
+
+/* Disable hover scaling on touch devices */
+@media (hover: none) {
+    .filter:hover {
+        transform: none;
+    }
+}
+
+/* Listings Grid & Cards */
 .listings-container {
-    border: none !important;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
     margin-bottom: 2rem;
 }
 
 .listing-card {
     border: none !important;
-    margin: 2rem;
+    width: 20rem;
 }
 
-.card-img-top {
-    border-radius: 1rem !important;
-    width: 100% !important;
-    object-fit: cover !important;
+.card-img {
+    width: 100%;
+    height: 20rem;
+    object-fit: cover;
 }
 
 .card-body {
@@ -102,15 +179,13 @@ body {
     font-weight: 400 !important;
 }
 
-
-
+/* Card Overlay */
 .card-img-overlay {
     opacity: 0;
     transition: opacity 0.3s ease, background-color 0.3s ease;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: black;
     font-weight: 600;
     border-radius: 1rem;
 }
@@ -120,19 +195,54 @@ body {
     background-color: rgba(255, 255, 255, 0.8);
 }
 
-/* add page */
-.add-btn{
+/* Remove hover overlay on mobile */
+@media (hover: none) {
+    .card:hover .card-img-overlay {
+        opacity: 0;
+    }
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+    .listing-card {
+        width: 45%;
+    }
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+    .listing-card {
+        width: 100%;
+        margin: 0.5rem;
+    }
+
+    .card-img {
+        height: 16rem;
+    }
+
+    .card-body {
+        padding: 0.5rem !important;
+    }
+
+    .card-text p {
+        font-size: 0.9rem;
+    }
+}
+
+
+   /* Tax Info */
+
+.tax-info {
+    display: none;
+}
+
+
+   /* Buttons */
+
+
+.add-btn,
+.edit-btn {
     background-color: #fe424d !important;
     border: none !important;
     border-radius: 10%;
 }
-
-/* Edit page */
-.edit-btn{
-    background-color: #fe424d !important;
-    border: none !important;
-    border-radius: 10%;
-}
-
-
-

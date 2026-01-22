@@ -4,9 +4,19 @@ const ExpressError = require("../utils/ExpressError");
 
 // INDEX
 module.exports.index = async (req, res) => {
-  const allListings = await Listing.find({});
+  const { category } = req.query;
+  let allListings;
+
+  if (category) {
+    allListings = await Listing.find({ category });
+  } else {
+    allListings = await Listing.find({});
+  }
+
   res.render("listings/index", { allListings });
 };
+
+
 
 // NEW FORM
 module.exports.renderNewForm = (req, res) => {
@@ -18,7 +28,13 @@ module.exports.createListing = async (req, res) => {
   const listing = new Listing(req.body.listing);
   listing.owner = req.user._id;
 
-  // 🔍 Convert location → coordinates (Nominatim)
+  if (req.body.listing.category) {
+    listing.category = Array.isArray(req.body.listing.category)
+      ? req.body.listing.category
+      : [req.body.listing.category];
+  }
+
+  // Convert location → coordinates (Nominatim)
   const query = encodeURIComponent(
     `${listing.location}, ${listing.country}`
   );
@@ -33,7 +49,7 @@ module.exports.createListing = async (req, res) => {
     return res.redirect("/listings/new");
   }
 
-  //  Save GeoJSON coordinates
+  // Save GeoJSON coordinates
   listing.geometry = {
     type: "Point",
     coordinates: [
@@ -54,6 +70,8 @@ module.exports.createListing = async (req, res) => {
   req.flash("success", "New listing created");
   res.redirect(`/listings/${listing._id}`);
 };
+
+
 
 
 
@@ -85,11 +103,11 @@ module.exports.showListing = async (req, res) => {
 // EDIT FORM
 module.exports.renderEditForm = async (req, res) => {
   const listing = await Listing.findById(req.params.id);
-  if(!listing){
+  if (!listing) {
     req.flash("error", "Listing you requested for does not exist");
   }
- let originalImageUrl = listing.image.url;
- originalImageUrl = originalImageUrl.replace("/upload","/upload/h_300,w_250");
+  let originalImageUrl = listing.image.url;
+  originalImageUrl = originalImageUrl.replace("/upload", "/upload/h_300,w_250");
   res.render("listings/edit", { listing, originalImageUrl });
 };
 
@@ -97,7 +115,7 @@ module.exports.renderEditForm = async (req, res) => {
 module.exports.updateListing = async (req, res) => {
   let listing = await Listing.findByIdAndUpdate(req.params.id, req.body.listing);
 
-  if ( typeof req.file !== "undefined") {
+  if (typeof req.file !== "undefined") {
     let url = req.file.path;
     let filename = req.file.filename;
     listing.image = { url, filename };
