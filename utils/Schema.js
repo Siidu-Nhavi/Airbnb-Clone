@@ -5,9 +5,10 @@ module.exports.listingSchema = Joi.object({
   listing: Joi.object({
     title: Joi.string().required(),
     description: Joi.string().required(),
-    price: Joi.number().required().min(0),
+    price: Joi.number().min(0).required(),
     location: Joi.string().required(),
     country: Joi.string().required(),
+
 
     category: Joi.alternatives().try(
       Joi.array().items(
@@ -43,6 +44,51 @@ module.exports.listingSchema = Joi.object({
     image: Joi.any()
   }).required()
 });
+
+module.exports.updateListingSchema = Joi.object({
+  listing: Joi.object({
+    title: Joi.string(),
+    description: Joi.string(),
+    price: Joi.number().min(0),
+    location: Joi.string(),
+    country: Joi.string(),
+
+    // ❗ OPTIONAL on EDIT
+    category: Joi.alternatives().try(
+      Joi.array().items(
+        Joi.string().valid(
+          "trending",
+          "rooms",
+          "mountain",
+          "castles",
+          "arctic",
+          "camping",
+          "farm",
+          "beach",
+          "luxury",
+          "budget",
+          "top-rated"
+        )
+      ),
+      Joi.string().valid(
+        "trending",
+        "rooms",
+        "mountain",
+        "castles",
+        "arctic",
+        "camping",
+        "farm",
+        "beach",
+        "luxury",
+        "budget",
+        "top-rated"
+      )
+    ),
+
+    image: Joi.any()
+  }).required()
+});
+
 
 
 module.exports.reviewSchema = Joi.object({

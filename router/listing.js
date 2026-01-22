@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const wrapAsync = require("../utils/wrapAsync");
-const { isLoggedIn, isOwner, validateListing } = require("../middleware");
+const { isLoggedIn, isOwner, validateListing, validateUpdateListing } = require("../middleware");
 const listingController = require("../controllers/listing");
 
 const multer = require("multer");
@@ -31,7 +31,7 @@ router.route("/:id")
     isLoggedIn,
     isOwner,
     upload.single("listing[image]"),
-    validateListing,
+    validateUpdateListing,
     wrapAsync(listingController.updateListing)
   )
   .delete(
