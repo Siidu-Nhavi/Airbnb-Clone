@@ -4,16 +4,28 @@ const ExpressError = require("../utils/ExpressError");
 
 // INDEX
 module.exports.index = async (req, res) => {
-  const { category } = req.query;
-  let allListings;
+  const { category, search } = req.query;
+  let query = {};
 
   if (category) {
-    allListings = await Listing.find({ category });
-  } else {
-    allListings = await Listing.find({});
+    query.category = category;
   }
 
-  res.render("listings/index", { allListings });
+  if (search) {
+    query.$or = [
+      { title: { $regex: search, $options: "i" } },
+      { description: { $regex: search, $options: "i" } },
+      { location: { $regex: search, $options: "i" } },
+      { country: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  const allListings = await Listing.find(query);
+
+  res.render("listings/index", {
+    allListings,
+    search
+  });
 };
 
 

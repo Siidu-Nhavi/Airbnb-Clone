@@ -1,7 +1,6 @@
-if(process.env.NODE_ENV != "production"){
-  require('dotenv').config();
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
 }
-
 
 const express = require("express");
 const app = express();
@@ -22,24 +21,21 @@ const listingRouter = require("./router/listing.js");
 const reviewsRouter = require("./router/review.js");
 const userRouter = require("./router/user.js");
 
-//   DATABASE
-// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
-
+// DATABASE
 const dbUrl = process.env.ATLASDB_URL;
 
-//   SESSION CONFIG
-
+// SESSION STORE
 const store = new MongoStore({
-  mongoUrl : dbUrl,
-  crypto:{
-    secret:process.env.SESSION_SECRET,
+  mongoUrl: dbUrl,
+  crypto: {
+    secret: process.env.SESSION_SECRET,
   },
-  touchAfter:24*3600,
+  touchAfter: 24 * 3600,
 });
 
-store.on("error",(err) =>{
+store.on("error", (err) => {
   console.log("Error in MONGO SESSION STORE", err);
-})
+});
 
 const sessionOptions = {
   store,
@@ -47,12 +43,12 @@ const sessionOptions = {
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
   },
 };
 
-
+// DB CONNECTION + SERVER
 async function main() {
   await mongoose.connect(dbUrl);
   console.log("Connected to DB");
@@ -62,24 +58,21 @@ async function main() {
   });
 }
 
-main().catch(err => console.error(err));
+main().catch((err) => console.error(err));
 
-//   VIEW ENGINE
-
+// VIEW ENGINE
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-   //MIDDLEWARE
-
+// MIDDLEWARE
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(session(sessionOptions));
 app.use(flash());
 
-//   PASSPORT CONFIG
-
+// PASSPORT CONFIG
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -87,33 +80,34 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// for image storing
-app.use("/uploads", express.static("uploads"));
-
-
-
-//   FLASH & USER LOCALS
-
+// LOCALS (IMPORTANT – fixes currUser error)
 app.use((req, res, next) => {
-  res.locals.success = req.flash("success"); 
+  res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   res.locals.currUser = req.user;
   next();
 });
 
-//   ROUTES
-
+// ROUTES
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
 app.use("/", userRouter);
 
-//   ERROR HANDLING
+// STATIC PAGES
+app.get("/privacy", (req, res) => {
+  res.render("privacy");
+});
 
+app.get("/terms", (req, res) => {
+  res.render("terms");
+});
+
+// 404 HANDLER
 app.use((req, res, next) => {
   next(new ExpressError(404, "Page not found"));
 });
 
-
+// ERROR HANDLER
 app.use((err, req, res, next) => {
   const { statusCode = 500 } = err;
   res.status(statusCode).render("error", { err });

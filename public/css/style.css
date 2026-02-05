@@ -60,8 +60,6 @@ body {
 }
 
 /* Footer */
-
-
 .f-info {
     background-color: #ebebeb;
     display: flex;
@@ -112,7 +110,6 @@ body {
 }
 
  /* Filters (Index Page) */
-
 
 #filters {
     display: flex;
