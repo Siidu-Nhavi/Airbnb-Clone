@@ -93,6 +93,11 @@ app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
 app.use("/", userRouter);
 
+// HOME REDIRECT
+app.get("/", (req, res) => {
+  res.redirect("/listings");
+});
+
 // STATIC PAGES
 app.get("/privacy", (req, res) => {
   res.render("privacy");
