@@ -11,18 +11,49 @@
     color: #fff;
   }
 
-  .btn-search i {
-    display: inline;
-  }
-
   .search-inp {
     text-align: center;
     border-radius: 25px;
     padding: 0.5rem 3rem;
   }
+
+  /* Desktop search width */
+  @media (min-width: 992px) {
+    .search-inp {
+      width: 300px;
+    }
+  }
+
+  /* Mobile Fix */
+  @media (max-width: 991px) {
+
+    .navbar-nav.position-absolute {
+      position: static !important;
+      transform: none !important;
+      width: 100%;
+      margin-top: 0.75rem;
+    }
+
+    .navbar form {
+      width: 100%;
+      flex-direction: row;
+    }
+
+    .search-inp {
+      flex: 1;
+      width: auto !important;
+      padding: 0.5rem 1rem;
+    }
+
+    .btn-search {
+      width: auto;
+      white-space: nowrap;
+    }
+  }
 </style>
 
-<nav class="navbar navbar-expand-lg bg-body-light border-bottom sticky-top">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom sticky-top">
   <div class="container-fluid">
 
     <!-- Brand -->
@@ -30,24 +61,24 @@
       <i class="fa-solid fa-compass"></i>
     </a>
 
-    <!-- Mobile toggle -->
+    <!-- Mobile Toggle -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 
-      <!-- Left links -->
+      <!-- Left -->
       <div class="navbar-nav">
         <a class="nav-link" href="/listings">Explore</a>
       </div>
 
-      <!-- Center search -->
+      <!-- Center Search (Original Layout Preserved) -->
       <div class="navbar-nav position-absolute start-50 translate-middle-x">
         <form class="d-flex" role="search" action="/listings" method="GET">
 
           <input class="form-control me-2 search-inp" type="search" name="search" placeholder="Search destinations"
-            style="width: 300px;" value="<%= typeof search !== 'undefined' ? search : '' %>" />
+            value="<%= typeof search !== 'undefined' ? search : '' %>" />
 
           <button class="btn btn-search" type="submit">
             <i class="fa-solid fa-magnifying-glass"></i>
@@ -57,7 +88,7 @@
         </form>
       </div>
 
-      <!-- Right links -->
+      <!-- Right -->
       <div class="navbar-nav ms-auto">
         <a class="nav-link" href="/listings/new">Airbnb your home</a>
 
